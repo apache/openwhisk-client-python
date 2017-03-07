@@ -16,7 +16,7 @@ before_script:
     - flake8 . --count --max-line-length=127 --statistics --exit-zero
 
 script:
-    - ls  # a basic no-op
+    - flake8 . --count --select=E999  # E999 SyntaxError: invalid syntax
 
 notifications:
   email:
