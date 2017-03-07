@@ -5,7 +5,7 @@ python:
     - "2.7.13"
     - "3.6.0"
     - "pypy"
-#   - "pypy3"  # flake8 needs Python 3.3 or better
+#   - "pypy3"    # flake8 needs Python 3.3 or better
 #   - "nightly"  # currently points to 3.7-dev
 
 before_install:
