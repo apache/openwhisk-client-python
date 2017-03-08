@@ -75,7 +75,7 @@ def request(method, urlString, body='', headers=None, auth=None, verbose=False,
             conn = httplib.HTTPSConnection(https_proxy or url.netloc)
         else:
             conn = httplib.HTTPSConnection(https_proxy or url.netloc,
-                                    context=ssl._create_unverified_context())
+                            context=ssl._create_unverified_context())  # noqa
         if https_proxy:
             conn.set_tunnel(url.netloc)
 
