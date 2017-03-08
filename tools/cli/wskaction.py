@@ -73,9 +73,13 @@ class Action(Item):
         subcmd = parser.add_parser('invoke', help='invoke action')
         subcmd.add_argument('name', help='the name of the action to invoke')
         addAuthenticatedCommand(subcmd, props)
-        subcmd.add_argument('-p', '--param', help='parameters', nargs=2, action='append')
-        subcmd.add_argument('-b', '--blocking', action='store_true', help='blocking invoke')
-        subcmd.add_argument('-r', '--result', help='show only activation result if a blocking activation (unless there is a failure)', action='store_true')
+        subcmd.add_argument('-p', '--param', action='append',
+                            help='parameters', nargs=2)
+        subcmd.add_argument('-b', '--blocking', action='store_true',
+                            help='blocking invoke')
+        subcmd.add_argument('-r', '--result', action='store_true',
+                            help=('show only activation result if a blocking '
+                                  'activation (unless there is a failure)'))
 
         self.addDefaultCommands(parser, props)
 
@@ -94,14 +98,16 @@ class Action(Item):
         exe = self.getExec(args, props)
         validExe = exe is not None and 'kind' in exe
         fileok = args.artifact is None or os.path.isfile(args.artifact)
-        if (update and fileok) or validExe:  # if create action, then exe must be valid
+        # if create action, then exe must be valid
+        if (update and fileok) or validExe:
             payload = {}
             if args.annotation:
                 payload['annotations'] = getAnnotations(args)
             if args.param:
                 payload['parameters'] = getParams(args)
             # API will accept limits == {} as limits not specified on an update
-            if args.timeout is not None or args.memory is not None or args.logsize is not None:
+            if (args.timeout is not None or args.memory is not None or
+                    args.logsize is not None):
                 payload['limits'] = self.getLimits(args)
             if validExe:
                 payload['exec'] = exe
@@ -123,16 +129,20 @@ class Action(Item):
         res = self.doInvoke(args, props)
         try:
             result = json.loads(res.read())
-            if 'activationId' in result:  # if args.result is true, there is no activation id
-                print('ok: invoked %(name)s with id %(id)s' % {'name': args.name, 'id': result['activationId']})
+            # if args.result is true, there is no activation id
+            if 'activationId' in result:
+                fmt = 'ok: invoked %(name)s with id %(id)s'
+                print(fmt % {'name': args.name, 'id': result['activationId']})
             if res.status == httplib.OK:  # true iff args.blocking is true
-                print(getPrettyJson(result))  # prints the activation or just the result if args.result
+                # prints the activation or just the result if args.result
+                print(getPrettyJson(result))
                 return 0
             elif res.status == httplib.ACCEPTED:
                 return 0 if not args.blocking else res.status
             elif res.status == httplib.BAD_GATEWAY:
                 return responseError(res, prefix='', flatten=False)
-            elif res.status == httplib.INTERNAL_SERVER_ERROR and 'code' not in result:
+            elif (res.status == httplib.INTERNAL_SERVER_ERROR and
+                  'code' not in result):
                 return responseError(res, prefix='', flatten=False)
             else:
                 return responseError(res)
@@ -142,7 +152,8 @@ class Action(Item):
     # invokes the action and returns HTTP response
     def doInvoke(self, args, props):
         namespace, pname = parseQName(args.name, props)
-        url = '%(apibase)s/namespaces/%(namespace)s/actions/%(name)s?blocking=%(blocking)s&result=%(result)s' % {
+        url = ('%(apibase)s/namespaces/%(namespace)s/actions/%(name)s?'
+               'blocking=%(blocking)s&result=%(result)s') % {
             'apibase': apiBase(props),
             'namespace': urllib.quote(namespace),
             'name': self.getSafeName(pname),
@@ -153,10 +164,11 @@ class Action(Item):
         headers = {
             'Content-Type': 'application/json'
         }
-        res = request('POST', url, payload, headers, auth=args.auth, verbose=args.verbose)
+        res = request('POST', url, payload, headers, auth=args.auth,
+                      verbose=args.verbose)
         return res
 
-    # creates { timeout: msecs, memory: megabytes } action timeout/memory limits
+    # create { timeout: msecs, memory: megabytes } action timeout/memory limits
     def getLimits(self, args):
         limits = {}
         if args.timeout is not None:
@@ -168,14 +180,16 @@ class Action(Item):
         return limits
 
     # creates one of:
-    # { kind: "nodejs", code: "js code", initializer: "base64 encoded string" } where initializer is optional
-    # { kind: "nodejs6", code: "js6 code", initializer: "base64 encoded string" } where initializer is optional
-    # { kind: "python", code: "python code" }
-    # { kind: "swift", code: "swift code" }
-    # { kind: "swift3", code: "swift3 code" }
-    # { kind: "java", jar: "base64-encoded JAR", main: "FQN of main class" }
-    # { kind: "blackbox", image: "docker image" }
-    # { kind: "sequence", components: list of fully qualified actions }
+    # {kind: "nodejs", code: "js code", initializer: "base64 encoded string"}
+    #    where initializer is optional
+    # {kind: "nodejs6", code: "js6 code", initializer: "base64 encoded string"}
+    #    where initializer is optional
+    # {kind: "python", code: "python code"}
+    # {kind: "swift", code: "swift code"}
+    # {kind: "swift3", code: "swift3 code"}
+    # {kind: "java", jar: "base64-encoded JAR", main: "FQN of main class"}
+    # {kind: "blackbox", image: "docker image"}
+    # {kind: "sequence", components: list of fully qualified actions}
     def getExec(self, args, props):
         exe = {}
         if args.docker:
@@ -188,7 +202,8 @@ class Action(Item):
             exe = self.getActionExec(args, props, existingAction)
         elif args.sequence:
             exe['kind'] = 'sequence'
-            exe['components'] = self.csvToQualifiedActions(props, args.artifact)
+            exe['components'] = self.csvToQualifiedActions(props,
+                                                           args.artifact)
         elif args.artifact is not None and os.path.isfile(args.artifact):
             contents = open(args.artifact, 'rb').read()
             if args.kind in ['swift:3', 'swift:3.0', 'swift:3.0.0']:
@@ -216,14 +231,17 @@ class Action(Item):
         return exe
 
     def findMainClass(self, jarPath):
-        signature = """public static com.google.gson.JsonObject main(com.google.gson.JsonObject);"""
+        signature = ('public static com.google.gson.JsonObject '
+                     'main(com.google.gson.JsonObject);')
+
         def run(cmd):
-            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
             (o, e) = proc.communicate()
             if proc.returncode != 0:
                 msg = "An error occurred while executing %s." % " ".join(cmd)
                 if e.strip() != "":
-                    msg = msg + "\n" + e
+                    msg += "\n" + e
                 raise Exception(msg)
             return o
 
@@ -241,10 +259,8 @@ class Action(Item):
     def getActionExec(self, args, props, name):
         res = self.httpGet(args, props, name)
         if res.status == httplib.OK:
-            execField = json.loads(res.read())['exec']
-        else:
-            execField = None
-        return execField
+            return json.loads(res.read())['exec']
+        return None
 
     def csvToList(self, csv):
         return csv.split(',')
