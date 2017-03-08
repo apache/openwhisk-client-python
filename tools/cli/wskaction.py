@@ -168,13 +168,13 @@ class Action(Item):
         return limits
 
     # creates one of:
-    # { kind: "nodejs", code: "js code" } where initializer is optional
-    # { kind: "nodejs6", code: "js6 code" } where initializer is optional
+    # { kind: "nodejs", code: "js code", initializer: "base64 encoded string" } where initializer is optional
+    # { kind: "nodejs6", code: "js6 code", initializer: "base64 encoded string" } where initializer is optional
     # { kind: "python", code: "python code" }
     # { kind: "swift", code: "swift code" }
     # { kind: "swift3", code: "swift3 code" }
     # { kind: "java", jar: "base64-encoded JAR", main: "FQN of main class" }
-    # { kind: "blackbox", image: "docker image", code: an optional base64 encoded zip file }
+    # { kind: "blackbox", image: "docker image" }
     # { kind: "sequence", components: list of fully qualified actions }
     def getExec(self, args, props):
         exe = {}
