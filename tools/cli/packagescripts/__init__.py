@@ -1,1 +1,1 @@
-from .wsk import main
+from .wsk import main  # noqa
