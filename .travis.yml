@@ -4,6 +4,8 @@ language: python
 python:
     - "2.7.13"
     - "3.6.0"
+    - "pypy"
+#   - "pypy3"    # flake8 needs Python 3.3 or better
 #   - "nightly"  # currently points to 3.7-dev
 
 before_install:
@@ -13,10 +15,10 @@ install:
     - pip install flake8
 
 before_script:
-    - flake8 . --count --max-line-length=127 --statistics --exit-zero
+    - flake8 . --count --statistics --exit-zero
 
 script:
-    - ls  # a basic no-op
+    - flake8 . --count --select=E999  # E999 SyntaxError: invalid syntax
 
 notifications:
   email:
