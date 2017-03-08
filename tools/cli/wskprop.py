@@ -90,7 +90,7 @@ def checkRequiredProperties(requiredPropertiesByName, properties):
                          if requiredProperties[key] is None]
     deferredInfo = ''
     for key, value in requiredProperties.items():
-        if value is not None or value == '':
+        if not value:
             print('property "%s" not found in environment or property file' %
                   key)
         else:
