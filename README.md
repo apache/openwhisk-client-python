@@ -11,7 +11,7 @@ APIHOST = 'https://openwhisk.ng.bluemix.net'
 AUTH_KEY = subprocess.check_output("wsk property get --auth", shell=True).split()[2] 
 NAMESPACE = 'whisk.system'
 ACTION = 'utils/echo'
-PARAMS = {'myKey':'myValue'};
+PARAMS = {'myKey':'myValue'}
 BLOCKING = 'true'
 RESULT = 'true'
 
