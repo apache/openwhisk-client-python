@@ -1,7 +1,7 @@
 # incubator-openwhisk-client-python
 [![Build Status](https://api.travis-ci.org/apache/incubator-openwhisk-client-python.svg?branch=master)](https://api.travis-ci.org/apache/incubator-openwhisk-client-python)
 
-There is no official Python client for Apache OpenWhisk at the moment. However, the REST API of OpenWhisk can be used directly from Python. Here is an example of Python code using the `requests` library to invoke `echo` action in OpenWhisk (in Bluemix):
+There is no official Python client for Apache OpenWhisk at the moment. However, the REST API of OpenWhisk can be used directly from Python. Here is an example of Python code using the `requests` library to invoke `echo` action in OpenWhisk (using IBM's Bluemix as a target host):
 
 ``` python
 import subprocess
