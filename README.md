@@ -1,7 +1,7 @@
 # incubator-openwhisk-client-python
-[![Build Status](https://travis-ci.org/openwhisk/openwhisk-client-python.svg?branch=master)](https://travis-ci.org/openwhisk/openwhisk-client-python)
+[![Build Status](https://api.travis-ci.org/apache/incubator-openwhisk-client-python.svg?branch=master)](https://api.travis-ci.org/apache/incubator-openwhisk-client-python)
 
-There is no official Python client for OpenWhisk at the moment. However, the REST API of OpenWhisk can be used directly from Python, for example using the `requests` library:
+There is no official Python client for Apache OpenWhisk at the moment. However, the REST API of OpenWhisk can be used directly from Python. Here is an example of Python code using the `requests` library to invoke `echo` action in OpenWhisk (in Bluemix):
 
 ``` python
 import subprocess
@@ -20,8 +20,8 @@ user_pass = AUTH_KEY.split(':')
 response = requests.post(url, json=PARAMS, params={'blocking': BLOCKING, 'result': RESULT}, auth=(user_pass[0], user_pass[1]))
 print(response.text)
 ```
-Swagger documentation for full API is available [here](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/openwhisk/openwhisk/master/core/controller/src/main/resources/apiv1swagger.json).
+Swagger documentation for full API is available [here](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/apache/incubator-openwhisk/master/core/controller/src/main/resources/apiv1swagger.json).
 
-There is an [open issue](https://github.com/openwhisk/openwhisk/issues/450) to create a Python client library to make this easier.
+There is an [open issue](apache/incubator-openwhisk#450) to create a Python client library to make this easier.
 
 NOTE: This repository used to comprise an OpenWhisk CLI written in Python. The CLI has been [superseded by a version written in Go](https://github.com/apache/incubator-openwhisk-cli).
