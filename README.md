@@ -1,4 +1,6 @@
-# incubator-openwhisk-client-python
+# OpenWhisk Client for Python
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Build Status](https://api.travis-ci.org/apache/incubator-openwhisk-client-python.svg?branch=master)](https://api.travis-ci.org/apache/incubator-openwhisk-client-python)
 
 There is no official Python client for Apache OpenWhisk at the moment. However, the REST API of OpenWhisk can be used directly from Python. Here is an example of Python code using the `requests` library to invoke `echo` action in OpenWhisk (using IBM's Bluemix as a target host):
@@ -8,7 +10,7 @@ import subprocess
 import requests
 
 APIHOST = 'https://openwhisk.ng.bluemix.net'
-AUTH_KEY = subprocess.check_output("wsk property get --auth", shell=True).split()[2] 
+AUTH_KEY = subprocess.check_output("wsk property get --auth", shell=True).split()[2]
 NAMESPACE = 'whisk.system'
 ACTION = 'utils/echo'
 PARAMS = {'myKey':'myValue'}
